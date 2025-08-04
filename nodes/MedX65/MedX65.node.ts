@@ -1,17 +1,23 @@
-import { IExecuteFunctions } from 'n8n-core';
-
 import {
 	IDataObject,
-	ILoadOptionsFunctions,
+	IExecuteFunctions,
 	INodeExecutionData,
-	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
-	NodeApiError,
-	NodeOperationError,
+	NodeConnectionType,
+	IHttpRequestMethods,
+	IRequestOptions,
 } from 'n8n-workflow';
 
-import { OptionsWithUri } from 'request';
+// Interface para opções de requisição compatível com n8n
+interface RequestOptions extends IRequestOptions {
+	method?: IHttpRequestMethods;
+	uri: string;
+	headers?: Record<string, string>;
+	body?: any;
+	json?: boolean;
+	qs?: Record<string, any>;
+}
 
 export class MedX65 implements INodeType {
 	description: INodeTypeDescription = {
@@ -25,8 +31,8 @@ export class MedX65 implements INodeType {
 		defaults: {
 			name: 'MedX65',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionType.Main],
+		outputs: [NodeConnectionType.Main],
 		credentials: [
 			{
 				name: 'medX65Api',
@@ -483,7 +489,7 @@ export class MedX65 implements INodeType {
 			: 'https://medx65-v65teste.azurewebsites.net';
 
 		// Get the Bearer token
-		const tokenOptions: OptionsWithUri = {
+		const tokenOptions: RequestOptions = {
 			method: 'GET',
 			uri: `${baseUrl}/api/integration/GetAuthorizedToken?token=${integrationToken}`,
 			json: true,
@@ -495,7 +501,7 @@ export class MedX65 implements INodeType {
 			const resource = this.getNodeParameter('resource', i) as string;
 			const operation = this.getNodeParameter('operation', i) as string;
 
-			const options: OptionsWithUri = {
+			const options: RequestOptions = {
 				headers: {
 					'Authorization': `Bearer ${authToken}`,
 					'Content-Type': 'application/json',
@@ -619,13 +625,14 @@ export class MedX65 implements INodeType {
 				returnData.push(responseData);
 			} catch (error) {
 				if (this.continueOnFail()) {
-					returnData.push({ error: error.message });
+					const errorMessage = error instanceof Error ? error.message : String(error);
+					returnData.push({ error: errorMessage });
 				} else {
 					throw error;
 				}
 			}
 		}
 
-		return [this.helpers.returnJsonArray(returnData)];
+		return [returnData.map(item => ({ json: item }))];
 	}
 }
