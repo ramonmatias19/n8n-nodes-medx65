@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="30" cy="30" r="30" fill="#2E86AB"/>
+  
+  <!-- Medical cross -->
+  <rect x="26" y="15" width="8" height="30" fill="white" rx="2"/>
+  <rect x="15" y="26" width="30" height="8" fill="white" rx="2"/>
+  
+  <!-- MX text -->
+  <text x="30" y="52" text-anchor="middle" fill="#2E86AB" font-family="Arial, sans-serif" font-size="10" font-weight="bold">MX65</text>
+</svg>
