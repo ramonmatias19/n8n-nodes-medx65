@@ -55,6 +55,10 @@ export class MedX65 implements INodeType {
 						value: 'contact',
 					},
 					{
+						name: 'Integration',
+						value: 'integration',
+					},
+					{
 						name: 'Patient',
 						value: 'patient',
 					},
@@ -144,6 +148,26 @@ export class MedX65 implements INodeType {
 					},
 				],
 				default: 'getById',
+			},			// Integration Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['integration'],
+					},
+				},
+				options: [
+					{
+						name: 'Get New Token',
+						value: 'getNewToken',
+						description: 'Get a new integration token',
+						action: 'Get new integration token',
+					},
+				],
+				default: 'getNewToken',
 			},			// Patient Operations
 			{
 				displayName: 'Operation',
@@ -595,6 +619,16 @@ export class MedX65 implements INodeType {
 					
 					options.method = 'GET';
 					options.uri = `${baseUrl}/api/integration/GetContatosGridBySearch?Name=${searchTerm}`;
+				}
+			}			else if (resource === 'integration') {
+				if (operation === 'getNewToken') {
+					options.method = 'GET';
+					options.uri = `${baseUrl}/api/Integration/GetIntegrationToken?newtoken=true`;
+					// Para esta operação, usamos o token atual como autorização
+					options.headers = {
+						'Authorization': `Bearer ${integrationToken}`,
+						'Content-Type': 'application/json',
+					};
 				}
 			}			else if (resource === 'patient') {
 				if (operation === 'getAll') {
