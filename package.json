@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-medx65",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "n8n nodes to interact with MedX65 medical system API",
 	"keywords": [
 		"n8n-community-node-package"
